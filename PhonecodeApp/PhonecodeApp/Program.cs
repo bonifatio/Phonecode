@@ -13,7 +13,7 @@ namespace PhonecodeApp
         {
             var lookup = new Dictionary<string, List<string>>();
 
-            var lines = File.ReadAllLines("test.w");
+            var lines = File.ReadAllLines("../../data/test.w");
 
             foreach (var line in lines)
             {
@@ -29,7 +29,7 @@ namespace PhonecodeApp
             foreach (var k in lookup.Keys)
                 Console.WriteLine($"{k}: {string.Join(", ", lookup[k])}");
 
-            var testLines = File.ReadAllLines("test.t");
+            var testLines = File.ReadAllLines("../../data/test.t");
 
             Console.WriteLine();
 
@@ -41,6 +41,8 @@ namespace PhonecodeApp
                 foreach (var enc in encodings)
                     Console.WriteLine($"{line}: {enc}");
             }
+
+            //var encodings1 = GetEncodings("04824", lookup, true);
 
             Console.ReadKey(false);
         }
@@ -57,7 +59,7 @@ namespace PhonecodeApp
                 List<string> leftEncodings;
                 bool skipWasMade = false;
 
-                if (!lookup.TryGetValue(left, out leftEncodings) && ((i == 0) && allowSkip))
+                if (!lookup.TryGetValue(left, out leftEncodings) && ((i == 1) && allowSkip))
                 {
                     leftEncodings = new List<string> { left };
                     skipWasMade = true;
@@ -72,7 +74,7 @@ namespace PhonecodeApp
                 }
                 else
                 {
-                    var rightEncodings = GetEncodings(right, lookup, skipWasMade);
+                    var rightEncodings = GetEncodings(right, lookup, !skipWasMade);
 
                     if(i == s.Length-1 && !skipWasMade)
                         rightEncodings.Add(right);
@@ -82,7 +84,7 @@ namespace PhonecodeApp
                 }
             }
 
-            return result;
+            return result.Distinct().ToList();
         }
 
         private static string EncodeToNumberString(string s)
